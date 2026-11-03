@@ -11,6 +11,7 @@ const wall = require('./wallpaper');
 const iconsLib = require('./icons');
 const baselineLib = require('./baseline');
 const resetLib = require('./reset');
+const appliedLib = require('./applied');
 
 const C = {
   dim: (s) => `\x1b[2m${s}\x1b[0m`,
@@ -54,6 +55,7 @@ ${C.bold('hues')} -- one palette, themed across every app on the machine.
                       [--clear]      put the original icons back
   hues reset [--dry-run]            put EVERYTHING back: icons, appearance,
                      [--remove-app]  terminal, editors, wallpaper
+  hues redo [--dry-run]             re-apply exactly what you had before reset
   hues snapshots                    list restore points
   hues revert [id]                  undo an apply (defaults to the newest)
 `;
@@ -132,8 +134,16 @@ function cmdApply(slug, flags) {
       ? `  ${C.green('✓')} ${'wallpaper'.padEnd(14)} ${C.dim(wallpaper.file)}`
       : `  ${C.red('✗')} ${'wallpaper'.padEnd(14)} ${C.red(wallpaper.error)}`);
   }
+  appliedLib.recordApply({
+    palette: p.slug,
+    targets: only,
+    activate: flags.activate !== false && !flags['no-activate'],
+    all: !!flags.all,
+    wallpaper: wallpaper && wallpaper.ok ? wallpaper.file : undefined,
+  });
+
   console.log(`\n  ${C.dim('restore point: ' + snapshot.id)}`);
-  console.log(`  ${C.dim('undo with: hues revert')}\n`);
+  console.log(`  ${C.dim('undo this apply: hues revert   |   undo everything: hues reset')}\n`);
 }
 
 function cmdWallpaper(dir, flags) {
@@ -181,6 +191,7 @@ function cmdIcons(flags) {
       console.log(`  ${r.ok ? C.green('↩') : C.red('✗')} ${a.name}${r.ok ? '' : '  ' + C.red(r.error)}`);
     }
     iconsLib.refreshDock();
+    appliedLib.clearIcons();
     console.log();
     return;
   }
@@ -195,6 +206,7 @@ function cmdIcons(flags) {
     console.log(`  ${r.ok ? C.green('✓') : C.red('✗')} ${a.name.padEnd(30)}${r.ok ? C.dim(path.basename(r.png)) : C.red(r.error)}`);
   }
   iconsLib.refreshDock();
+  appliedLib.recordIcons({ palette: p.slug, apps: targets.map((a) => a.name) });
   console.log(`\n  ${ok}/${targets.length} recoloured. ${C.dim('undo with: hues icons --clear')}\n`);
 }
 
@@ -216,7 +228,47 @@ function cmdReset(flags) {
     console.log(`       "${baseline.terminal.default}" is the macOS default and was assumed.`);
   }
   console.log(`\n  ${C.dim('not undone: browser themes/extensions you loaded by hand -- remove those')}`);
-  console.log(`  ${C.dim('in each browser\'s extensions page.')}\n`);
+  console.log(`  ${C.dim('in each browser\'s extensions page.')}`);
+  if (!dryRun && appliedLib.load()) {
+    console.log(`\n  ${C.green('reversible')} ${C.dim('-- your setup is still recorded. Put it all back with:')}`);
+    console.log(`  ${C.bold('hues redo')}\n`);
+  } else console.log();
+}
+
+function cmdRedo(flags) {
+  const last = appliedLib.load();
+  if (!last || !last.palette) {
+    throw new Error('nothing recorded to redo -- run `hues apply <palette>` first');
+  }
+  const summary = [
+    `palette   ${last.palette}`,
+    `targets   ${last.targets ? last.targets.join(', ') : 'all detected'}`,
+    `wallpaper ${last.wallpaper || '(none recorded)'}`,
+    `icons     ${last.icons ? `${last.icons.apps.length} apps` : '(not applied)'}`,
+  ];
+
+  if (flags['dry-run']) {
+    console.log(`\n  ${C.bold('dry run')} -- would restore the setup recorded ${C.dim(last.updated)}\n`);
+    for (const l of summary) console.log(`  ${C.dim('would')} ${l}`);
+    console.log();
+    return;
+  }
+
+  console.log(`\n  ${C.bold('restoring your previous Hues setup')} ${C.dim('(recorded ' + last.updated + ')')}\n`);
+  for (const l of summary) console.log(`  ${C.dim(l)}`);
+  console.log();
+
+  cmdApply(last.palette, {
+    only: last.targets ? last.targets.join(',') : undefined,
+    all: last.all,
+    wallpaper: last.wallpaper,
+    'no-activate': last.activate === false,
+  });
+
+  if (last.icons) {
+    console.log(`  ${C.bold('re-applying icons')}\n`);
+    cmdIcons({ apply: true, palette: last.icons.palette });
+  }
 }
 
 function cmdSnapshots() {
@@ -254,6 +306,7 @@ function main() {
       }
       case 'icons': return cmdIcons(flags);
       case 'reset': return cmdReset(flags);
+      case 'redo': case 'reapply': return cmdRedo(flags);
       case 'snapshots': return cmdSnapshots();
       case 'revert': return cmdRevert(pos[1]);
       case undefined: case 'help': case '--help': case '-h': return console.log(HELP);

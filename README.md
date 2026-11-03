@@ -84,6 +84,22 @@ Zed, vim, git and the wallpaper. It does not touch browser themes or extensions
 you loaded by hand, because the browser owns those; remove them from each
 browser's extensions page. `--remove-app` also deletes the Safari extension app.
 
+### Putting it back after a reset
+
+```sh
+hues redo               # re-apply exactly what you had
+hues redo --dry-run     # show what that would be
+```
+
+Every `apply` and `icons --apply` records what it did to
+`~/.hues/applied.json` — palette, targets, wallpaper and the icon set. `reset`
+deliberately leaves that file alone, so a reset is itself reversible: `redo`
+replays the configuration instead of making you remember it.
+
+So the two files in `~/.hues` do opposite jobs. `baseline.json` is the machine
+*before* Hues; `applied.json` is the machine *with* Hues. `reset` moves you to
+the first, `redo` moves you back to the second.
+
 To remove Hues itself as well:
 
 ```sh
@@ -104,6 +120,7 @@ curl -fsSL https://raw.githubusercontent.com/victorabuchi/hues/main/uninstall.sh
 | `hues set-wallpaper <image>` | Set the desktop wallpaper |
 | `hues snapshots` / `hues revert` | List and undo the last apply |
 | `hues reset [--dry-run]` | Put **everything** back: icons, appearance, wallpaper, editors |
+| `hues redo [--dry-run]` | Re-apply exactly what you had before the reset |
 
 Useful flags: `--only vscode,vim` to limit targets, `--all` to include apps that
 were not detected, `--no-activate` to install without switching, and

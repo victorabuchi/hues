@@ -27,6 +27,11 @@ function stripBlock(file, start, end) {
 /**
  * Put the machine back the way it was. Each step is independent and reports
  * its own outcome, so one failure never blocks the rest.
+ *
+ * This deliberately does not touch ~/.hues/applied.json. Clearing the icons
+ * here goes straight to iconsLib rather than through the `icons --clear`
+ * command path, precisely so the record of what was applied survives and
+ * `hues redo` can put it all back.
  */
 function reset({ dryRun = false, removeSafariApp = false } = {}) {
   const base = baselineLib.load();

@@ -1,11 +1,20 @@
-/* Per-site rules, hand-checked. Active in both scopes, because these are
-   targeted rather than guessed. Each block keys off the host via :is() on
-   attributes the site itself sets, or plain element selectors under a
-   host-scoped wrapper that the browser resolves per-document. */
+/* Per-site rules, hand-checked, active in both scopes.
+ *
+ * Two rules this file must obey, both learned the hard way:
+ *
+ * 1. Every block is scoped to the host it was written for, via the
+ *    data-hues-site attribute content.js sets. Selectors like [role="listbox"]
+ *    or .Box are not site-specific on their own and will otherwise repaint
+ *    unrelated sites.
+ *
+ * 2. Never set a background without also setting a text colour on the same
+ *    elements. Darkening a surface while leaving the site's dark text in place
+ *    makes it unreadable -- strictly worse than not touching it at all.
+ */
 
 /* ---------- GitHub ---------- */
-html[data-hues] body[class*="logged-in"],
-html[data-hues] .application-main {
+html[data-hues][data-hues-site$="github.com"] body,
+html[data-hues][data-hues-site$="github.com"] .application-main {
   --color-canvas-default: var(--hues-bg);
   --color-canvas-subtle: var(--hues-bg-dark);
   --color-canvas-inset: var(--hues-bg-darker);
@@ -18,127 +27,152 @@ html[data-hues] .application-main {
   --color-attention-fg: var(--hues-orange);
   --color-done-fg: var(--hues-purple);
 }
-html[data-hues] :is(.Header, .UnderlineNav, .footer) {
+html[data-hues][data-hues-site$="github.com"] :is(.Header, .UnderlineNav, .footer) {
   background-color: var(--hues-bg-darker) !important;
+  color: var(--hues-fg) !important;
   border-color: var(--hues-bg-lighter) !important;
 }
-html[data-hues] :is(.Box, .Popover-message, .markdown-body .highlight pre, .blob-code-inner) {
+html[data-hues][data-hues-site$="github.com"] :is(.Box, .Popover-message, .blob-code-inner) {
   background-color: var(--hues-bg-dark) !important;
   color: var(--hues-fg) !important;
 }
-html[data-hues] .pl-k  { color: var(--hues-pink) !important; }
-html[data-hues] .pl-s  { color: var(--hues-yellow) !important; }
-html[data-hues] .pl-c  { color: var(--hues-comment) !important; font-style: italic; }
-html[data-hues] .pl-en { color: var(--hues-green) !important; }
-html[data-hues] .pl-c1, html[data-hues] .pl-s1 .pl-v { color: var(--hues-purple) !important; }
-html[data-hues] .pl-smi, html[data-hues] .pl-ent { color: var(--hues-cyan) !important; }
+html[data-hues][data-hues-site$="github.com"] .pl-k  { color: var(--hues-pink) !important; }
+html[data-hues][data-hues-site$="github.com"] .pl-s  { color: var(--hues-yellow) !important; }
+html[data-hues][data-hues-site$="github.com"] .pl-c  { color: var(--hues-comment) !important; font-style: italic; }
+html[data-hues][data-hues-site$="github.com"] .pl-en { color: var(--hues-green) !important; }
+html[data-hues][data-hues-site$="github.com"] :is(.pl-c1, .pl-s1 .pl-v) { color: var(--hues-purple) !important; }
+html[data-hues][data-hues-site$="github.com"] :is(.pl-smi, .pl-ent) { color: var(--hues-cyan) !important; }
 
 /* ---------- Hacker News ---------- */
-html[data-hues] body > center > table,
-html[data-hues] #hnmain {
+html[data-hues][data-hues-site$="ycombinator.com"] :is(body, #hnmain) {
   background-color: var(--hues-bg) !important;
+  color: var(--hues-fg) !important;
 }
-html[data-hues] td[bgcolor="#ff6600"],
-html[data-hues] .hnname {
+html[data-hues][data-hues-site$="ycombinator.com"] :is(td[bgcolor], .hnname) {
   background-color: var(--hues-bg-darker) !important;
+  color: var(--hues-fg) !important;
 }
-html[data-hues] .titleline > a { color: var(--hues-cyan) !important; }
-html[data-hues] :is(.subtext, .hnuser, .age, .score) { color: var(--hues-comment) !important; }
-html[data-hues] .commtext { color: var(--hues-fg) !important; }
+html[data-hues][data-hues-site$="ycombinator.com"] .titleline > a { color: var(--hues-cyan) !important; }
+html[data-hues][data-hues-site$="ycombinator.com"] :is(.subtext, .hnuser, .age, .score) { color: var(--hues-comment) !important; }
+html[data-hues][data-hues-site$="ycombinator.com"] .commtext { color: var(--hues-fg) !important; }
 
-/* ---------- Wikipedia / MediaWiki ---------- */
-html[data-hues] :is(.mw-page-container, .mw-body, #content, #mw-head, .vector-header-container) {
+/* ---------- Wikipedia ---------- */
+html[data-hues][data-hues-site$="wikipedia.org"] :is(.mw-page-container, .mw-body, #content, .vector-header-container) {
   background-color: var(--hues-bg) !important;
   color: var(--hues-fg) !important;
   border-color: var(--hues-bg-lighter) !important;
 }
-html[data-hues] :is(.infobox, .navbox, .wikitable, .thumbinner, #toc, .toc) {
+html[data-hues][data-hues-site$="wikipedia.org"] :is(.infobox, .navbox, .wikitable, .thumbinner, #toc) {
   background-color: var(--hues-bg-dark) !important;
   color: var(--hues-fg) !important;
   border-color: var(--hues-bg-lighter) !important;
 }
-html[data-hues] .wikitable > * > tr > :is(th, td) { border-color: var(--hues-bg-lighter) !important; }
-html[data-hues] .wikitable > * > tr > th { background-color: var(--hues-bg-darker) !important; }
-html[data-hues] a.new { color: var(--hues-red) !important; }
+html[data-hues][data-hues-site$="wikipedia.org"] .wikitable > * > tr > th {
+  background-color: var(--hues-bg-darker) !important;
+  color: var(--hues-fg) !important;
+}
+html[data-hues][data-hues-site$="wikipedia.org"] a.new { color: var(--hues-red) !important; }
 
 /* ---------- Stack Overflow / Stack Exchange ---------- */
-html[data-hues] :is(.s-topbar, #left-sidebar, .s-sidebarwidget, #content, .post-layout) {
+html[data-hues]:is([data-hues-site$="stackoverflow.com"], [data-hues-site$="stackexchange.com"],
+  [data-hues-site$="superuser.com"], [data-hues-site$="serverfault.com"])
+  :is(.s-topbar, #left-sidebar, .s-sidebarwidget, #content, .post-layout) {
   background-color: var(--hues-bg) !important;
   color: var(--hues-fg) !important;
   border-color: var(--hues-bg-lighter) !important;
 }
-html[data-hues] .s-topbar { background-color: var(--hues-bg-darker) !important; }
-html[data-hues] :is(.s-prose pre, .s-code-block, code) {
+html[data-hues]:is([data-hues-site$="stackoverflow.com"], [data-hues-site$="stackexchange.com"])
+  :is(.s-prose pre, .s-code-block, code) {
   background-color: var(--hues-bg-dark) !important;
   color: var(--hues-green) !important;
 }
-html[data-hues] .s-post-summary { border-color: var(--hues-bg-lighter) !important; }
-html[data-hues] .s-tag { background-color: var(--hues-bg-light) !important; color: var(--hues-cyan) !important; }
-
-/* ---------- Google Search ---------- */
-html[data-hues] #searchform, html[data-hues] #appbar, html[data-hues] #main {
-  background-color: var(--hues-bg) !important;
+html[data-hues]:is([data-hues-site$="stackoverflow.com"], [data-hues-site$="stackexchange.com"]) .s-tag {
+  background-color: var(--hues-bg-light) !important;
+  color: var(--hues-cyan) !important;
 }
-html[data-hues] #search :is(h3, h3 > span) { color: var(--hues-cyan) !important; }
-html[data-hues] #search cite { color: var(--hues-green) !important; }
-html[data-hues] #rhs, html[data-hues] .kp-wholepage {
+
+/* ---------- MDN ---------- */
+html[data-hues][data-hues-site$="developer.mozilla.org"] :is(.main-page-content, .document-toc-container, .sidebar) {
+  background-color: var(--hues-bg) !important;
+  color: var(--hues-fg) !important;
+}
+html[data-hues][data-hues-site$="developer.mozilla.org"] .main-page-content :is(pre, code) {
   background-color: var(--hues-bg-dark) !important;
-  border-color: var(--hues-bg-lighter) !important;
+  color: var(--hues-green) !important;
 }
 
 /* ---------- YouTube ---------- */
-html[data-hues] ytd-app, html[data-hues] ytd-watch-flexy {
+html[data-hues][data-hues-site$="youtube.com"] :is(ytd-app, ytd-watch-flexy) {
   --yt-spec-base-background: var(--hues-bg);
   --yt-spec-raised-background: var(--hues-bg-dark);
   --yt-spec-menu-background: var(--hues-bg-dark);
   --yt-spec-text-primary: var(--hues-fg);
   --yt-spec-text-secondary: var(--hues-comment);
   --yt-spec-call-to-action: var(--hues-cyan);
-  --yt-spec-brand-button-background: var(--hues-purple);
 }
-html[data-hues] #masthead-container { background-color: var(--hues-bg-darker) !important; }
+html[data-hues][data-hues-site$="youtube.com"] #masthead-container {
+  background-color: var(--hues-bg-darker) !important;
+  color: var(--hues-fg) !important;
+}
 
 /* ---------- Reddit ---------- */
-html[data-hues] :is(shreddit-app, .theme-beta, #main-content) {
+html[data-hues][data-hues-site$="reddit.com"] :is(shreddit-app, #main-content) {
   background-color: var(--hues-bg) !important;
   color: var(--hues-fg) !important;
 }
-html[data-hues] shreddit-post { background-color: var(--hues-bg-dark) !important; }
-
-/* ---------- MDN ---------- */
-html[data-hues] :is(.main-page-content, .document-toc-container, .sidebar) {
-  background-color: var(--hues-bg) !important;
-  color: var(--hues-fg) !important;
-}
-html[data-hues] .main-page-content :is(pre, code) {
+html[data-hues][data-hues-site$="reddit.com"] shreddit-post {
   background-color: var(--hues-bg-dark) !important;
-  color: var(--hues-green) !important;
+  color: var(--hues-fg) !important;
 }
 
-/* ---------- Outlook on the web / Microsoft 365 ---------- */
-html[data-hues] :is([class*="readingPane"], [class*="ReadingPane"], [role="main"]) {
-  background-color: var(--hues-bg) !important;
-}
-html[data-hues] :is([class*="messageBody"], [class*="MessageBody"], [id*="ReadingPaneContainer"]) {
+/* ---------- Outlook on the web ----------
+ * Outlook is a large app with generated class names, so picking out individual
+ * surfaces does not converge: each fix leaves another light panel behind, and a
+ * half-recoloured app is harder to read than an untouched one. Because the host
+ * is known here, the safe move is the full treatment -- background and text
+ * together on everything -- rather than a guess at which classes matter. */
+html[data-hues]:is([data-hues-site*="outlook."], [data-hues-site*="office.com"]),
+html[data-hues]:is([data-hues-site*="outlook."], [data-hues-site*="office.com"]) body {
   background-color: var(--hues-bg) !important;
   color: var(--hues-fg) !important;
-  -webkit-text-fill-color: var(--hues-fg) !important;
 }
-/* The subject header and command surfaces keep a white background-image even
-   once background-color is transparent, leaving near-white text on white. */
-html[data-hues] :is([class*="subject"], [class*="Subject"],
-  [class*="headerContainer"], [class*="HeaderContainer"],
-  [class*="commandBar"], [class*="CommandBar"], [role="heading"]) {
-  background-color: var(--hues-bg) !important;
+html[data-hues]:is([data-hues-site*="outlook."], [data-hues-site*="office.com"])
+  *:not(:where(svg, svg *, img, video, canvas, iframe, picture, source, object, embed)) {
+  background-color: transparent !important;
   background-image: none !important;
+  border-color: var(--hues-bg-lighter) !important;
   color: var(--hues-fg) !important;
   -webkit-text-fill-color: var(--hues-fg) !important;
 }
-
-/* Mail items carry their own light surfaces; flatten them onto the palette. */
-html[data-hues] :is([role="listbox"], [role="option"], [class*="customScrollBar"]) {
-  background-color: var(--hues-bg-dark) !important;
+html[data-hues]:is([data-hues-site*="outlook."], [data-hues-site*="office.com"]) :is(a, a *) {
+  color: var(--hues-cyan) !important;
+  -webkit-text-fill-color: var(--hues-cyan) !important;
 }
-html[data-hues] [role="option"][aria-selected="true"] {
+html[data-hues]:is([data-hues-site*="outlook."], [data-hues-site*="office.com"]) :is(input, textarea, select, button) {
+  background-color: var(--hues-bg-light) !important;
+  color: var(--hues-fg) !important;
+  -webkit-text-fill-color: var(--hues-fg) !important;
+  border-color: var(--hues-bg-lighter) !important;
+}
+html[data-hues]:is([data-hues-site*="outlook."], [data-hues-site*="office.com"]) [aria-selected="true"] {
   background-color: var(--hues-current-line) !important;
+}
+html[data-hues]:is([data-hues-site*="outlook."], [data-hues-site*="office.com"]) ::-webkit-scrollbar {
+  width: 12px; height: 12px; background: var(--hues-bg-dark) !important;
+}
+html[data-hues]:is([data-hues-site*="outlook."], [data-hues-site*="office.com"]) ::-webkit-scrollbar-thumb {
+  background: var(--hues-selection) !important; border-radius: 6px;
+}
+
+/* ---------- Moodle ----------
+ * Course cards and activity icons are drawn as background-image on plain divs,
+ * so nothing here may clear background-image. */
+html[data-hues][data-hues-site*="moodle"] :is(body, #page, .card, .block, .course-content) {
+  background-color: var(--hues-bg) !important;
+  color: var(--hues-fg) !important;
+  border-color: var(--hues-bg-lighter) !important;
+}
+html[data-hues][data-hues-site*="moodle"] :is(.navbar, .secondary-navigation, #page-header) {
+  background-color: var(--hues-bg-darker) !important;
+  color: var(--hues-fg) !important;
 }

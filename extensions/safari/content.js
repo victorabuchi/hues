@@ -6,6 +6,9 @@
  * that every rule is scoped to.
  */
 const ROOT_ATTR = 'data-hues';
+// Published so sites.css can scope each block to the site it was written for.
+// Without this, a rule like [role="listbox"] silently applies everywhere.
+const SITE_ATTR = 'data-hues-site';
 
 const DEFAULTS = { enabled: true, mode: 'sites', disabledHosts: [] };
 
@@ -18,8 +21,10 @@ function apply({ enabled, mode, disabledHosts }) {
   const root = document.documentElement;
   if (!enabled || (disabledHosts || []).includes(host)) {
     root.removeAttribute(ROOT_ATTR);
+    root.removeAttribute(SITE_ATTR);
     return;
   }
+  root.setAttribute(SITE_ATTR, host);
   // "sites" applies only the hand-tuned per-site rules; "all" also turns on
   // the generic recolour, which is riskier on unknown layouts.
   root.setAttribute(ROOT_ATTR, mode === 'all' ? 'all' : 'sites');

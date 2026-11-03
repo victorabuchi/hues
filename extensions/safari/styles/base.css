@@ -53,16 +53,13 @@ html[data-hues="all"] :is(pre, code, kbd, samp) * {
   -webkit-text-fill-color: var(--hues-green) !important;
 }
 
-/* `background-color: transparent` does not clear a background *image*, and a
-   white background-image under text we have just forced to near-white is worse
-   than leaving the element alone. Clear it on containers only: inline elements
-   like <i> and <span> routinely use background-image for icon sprites, and
-   blanking those would delete the icons. */
-html[data-hues="all"] :is(html, body, div, section, main, header, footer, aside,
-  article, nav, form, fieldset, table, thead, tbody, tfoot, tr, td, th,
-  ul, ol, li, dl, dd, dt, figure, details, summary) {
-  background-image: none !important;
-}
+/* Deliberately NOT clearing background-image here.
+   An earlier version did, to kill white chrome surfaces that survived
+   `background-color: transparent`. But content images are routinely painted
+   that way too -- Moodle draws course card images and activity icons as
+   background-image on plain divs -- so a blanket rule deletes real content.
+   Chrome surfaces are handled per site in sites.css, where the element is
+   known to be chrome. */
 
 /* Scrollbars are painted by the engine, not by any element, so the rules above
    never reach them -- they stayed light against the recoloured page. */

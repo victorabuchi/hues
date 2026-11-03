@@ -3,11 +3,11 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const STATE_DIR = path.join(os.homedir(), '.varjo');
+const STATE_DIR = path.join(os.homedir(), '.hues');
 const SNAP_DIR = path.join(STATE_DIR, 'snapshots');
 
 /**
- * A snapshot records every path varjo is about to touch, together with that
+ * A snapshot records every path hues is about to touch, together with that
  * path's prior contents (or a marker saying it did not exist). `revert`
  * replays the newest snapshot, so an apply is always undoable.
  */
@@ -52,7 +52,7 @@ function listSnapshots() {
     .map((d) => JSON.parse(fs.readFileSync(path.join(SNAP_DIR, d, 'manifest.json'), 'utf8')));
 }
 
-/** Restore a snapshot. Files varjo created (existed:false) are removed. */
+/** Restore a snapshot. Files hues created (existed:false) are removed. */
 function revert(id) {
   const snaps = listSnapshots();
   const snap = id ? snaps.find((s) => s.id === id) : snaps[snaps.length - 1];

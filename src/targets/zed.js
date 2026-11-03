@@ -99,9 +99,9 @@ module.exports = {
 
     const theme = {
       $schema: 'https://zed.dev/schema/themes/v0.2.0.json',
-      name: `${p.name} (Varjo)`,
-      author: 'Varjo',
-      themes: [{ name: `${p.name} (Varjo)`, appearance: dark ? 'dark' : 'light', style }],
+      name: `${p.name} (Hues)`,
+      author: 'Hues',
+      themes: [{ name: `${p.name} (Hues)`, appearance: dark ? 'dark' : 'light', style }],
     };
     return [{ name: `${p.slug}.json`, content: JSON.stringify(theme, null, 2) + '\n' }];
   },
@@ -117,10 +117,10 @@ module.exports = {
     if (fs.existsSync(ZED_SETTINGS)) {
       try { s = JSON.parse(fs.readFileSync(ZED_SETTINGS, 'utf8').replace(/^\s*\/\/.*$/gm, '')); } catch { s = {}; }
     }
-    s.theme = `${p.name} (Varjo)`;
+    s.theme = `${p.name} (Hues)`;
     fs.mkdirSync(path.dirname(ZED_SETTINGS), { recursive: true });
     fs.writeFileSync(ZED_SETTINGS, JSON.stringify(s, null, 2) + '\n');
-    return `set theme = "${p.name} (Varjo)"`;
+    return `set theme = "${p.name} (Hues)"`;
   },
   targets: () => [ZED_SETTINGS],
 };

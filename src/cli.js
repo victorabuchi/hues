@@ -36,22 +36,22 @@ function parseArgs(argv) {
 }
 
 const HELP = `
-${C.bold('varjo')} -- one palette, themed across every app on the machine.
+${C.bold('hues')} -- one palette, themed across every app on the machine.
 
-  varjo palettes                     list palettes
-  varjo targets                      list targets and whether the app is installed
-  varjo check [palette]              WCAG 2.1 contrast audit of a palette
-  varjo build <palette> [--only a,b] generate theme files into build/
-  varjo apply <palette> [--only a,b] generate, install and switch apps over
+  hues palettes                     list palettes
+  hues targets                      list targets and whether the app is installed
+  hues check [palette]              WCAG 2.1 contrast audit of a palette
+  hues build <palette> [--only a,b] generate theme files into build/
+  hues apply <palette> [--only a,b] generate, install and switch apps over
                          [--all]     include targets whose app was not detected
                          [--no-activate]
                          [--wallpaper <path|auto|off>]
-  varjo wallpaper <dir> [--match p]  rank wallpapers in a directory by palette fit
-  varjo set-wallpaper <image>        set the desktop wallpaper
-  varjo icons [--apply] [--only A,B] recolour app icons through the palette
+  hues wallpaper <dir> [--match p]  rank wallpapers in a directory by palette fit
+  hues set-wallpaper <image>        set the desktop wallpaper
+  hues icons [--apply] [--only A,B] recolour app icons through the palette
                       [--clear]      put the original icons back
-  varjo snapshots                    list restore points
-  varjo revert [id]                  undo an apply (defaults to the newest)
+  hues snapshots                    list restore points
+  hues revert [id]                  undo an apply (defaults to the newest)
 `;
 
 function cmdPalettes() {
@@ -124,11 +124,11 @@ function cmdApply(slug, flags) {
       : `  ${C.red('✗')} ${'wallpaper'.padEnd(14)} ${C.red(wallpaper.error)}`);
   }
   console.log(`\n  ${C.dim('restore point: ' + snapshot.id)}`);
-  console.log(`  ${C.dim('undo with: varjo revert')}\n`);
+  console.log(`  ${C.dim('undo with: hues revert')}\n`);
 }
 
 function cmdWallpaper(dir, flags) {
-  if (!dir) throw new Error('usage: varjo wallpaper <dir> [--match <palette>]');
+  if (!dir) throw new Error('usage: hues wallpaper <dir> [--match <palette>]');
   const files = wall.scan(dir);
   const described = wall.describe(files);
   console.log(`\n  ${files.length} images in ${dir}\n`);
@@ -186,7 +186,7 @@ function cmdIcons(flags) {
     console.log(`  ${r.ok ? C.green('✓') : C.red('✗')} ${a.name.padEnd(30)}${r.ok ? C.dim(path.basename(r.png)) : C.red(r.error)}`);
   }
   iconsLib.refreshDock();
-  console.log(`\n  ${ok}/${targets.length} recoloured. ${C.dim('undo with: varjo icons --clear')}\n`);
+  console.log(`\n  ${ok}/${targets.length} recoloured. ${C.dim('undo with: hues icons --clear')}\n`);
 }
 
 function cmdSnapshots() {
@@ -214,11 +214,11 @@ function main() {
       case 'palettes': return cmdPalettes();
       case 'targets': return cmdTargets();
       case 'check': return cmdCheck(pos[1]);
-      case 'build': if (!pos[1]) throw new Error('usage: varjo build <palette>'); return cmdBuild(pos[1], flags);
-      case 'apply': if (!pos[1]) throw new Error('usage: varjo apply <palette>'); return cmdApply(pos[1], flags);
+      case 'build': if (!pos[1]) throw new Error('usage: hues build <palette>'); return cmdBuild(pos[1], flags);
+      case 'apply': if (!pos[1]) throw new Error('usage: hues apply <palette>'); return cmdApply(pos[1], flags);
       case 'wallpaper': return cmdWallpaper(pos[1], flags);
       case 'set-wallpaper': {
-        if (!pos[1]) throw new Error('usage: varjo set-wallpaper <image>');
+        if (!pos[1]) throw new Error('usage: hues set-wallpaper <image>');
         console.log(`  set wallpaper: ${wall.set(pos[1])}`);
         return;
       }
@@ -226,7 +226,7 @@ function main() {
       case 'snapshots': return cmdSnapshots();
       case 'revert': return cmdRevert(pos[1]);
       case undefined: case 'help': case '--help': case '-h': return console.log(HELP);
-      default: throw new Error(`unknown command "${cmd}" -- try: varjo help`);
+      default: throw new Error(`unknown command "${cmd}" -- try: hues help`);
     }
   } catch (err) {
     console.error(`\n  ${C.red('error')} ${err.message}\n`);

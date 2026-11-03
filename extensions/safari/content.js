@@ -5,7 +5,7 @@
  * they should apply to this site, by putting a marker attribute on <html>
  * that every rule is scoped to.
  */
-const ROOT_ATTR = 'data-varjo';
+const ROOT_ATTR = 'data-hues';
 
 const DEFAULTS = { enabled: true, mode: 'sites', disabledHosts: [] };
 

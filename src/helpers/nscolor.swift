@@ -23,7 +23,7 @@ func color(fromHex hex: String) -> NSColor? {
 
 for arg in CommandLine.arguments.dropFirst() {
     guard let c = color(fromHex: arg), let generic = c.usingColorSpace(.genericRGB) else {
-        FileHandle.standardError.write("varjo: bad color \(arg)\n".data(using: .utf8)!)
+        FileHandle.standardError.write("hues: bad color \(arg)\n".data(using: .utf8)!)
         exit(1)
     }
     let data = try! NSKeyedArchiver.archivedData(withRootObject: generic, requiringSecureCoding: false)

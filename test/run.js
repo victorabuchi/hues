@@ -92,7 +92,7 @@ t('a palette with no ansi block still derives 16 colours', () => {
 // ---- encoders ----
 t('plist writer emits parseable XML', () => {
   const xml = plist.build({ name: 'x', n: 2.5, i: 3, d: plist.data('YWJj') });
-  const tmp = path.join(os.tmpdir(), `varjo-test-${process.pid}.plist`);
+  const tmp = path.join(os.tmpdir(), `hues-test-${process.pid}.plist`);
   fs.writeFileSync(tmp, xml);
   execFileSync('/usr/bin/plutil', ['-lint', tmp], { stdio: 'pipe' });
   fs.unlinkSync(tmp);
@@ -170,7 +170,7 @@ t('safari palette.css exposes every custom property', () => {
   const tg = registry.all().find((x) => x.id === 'safari');
   const css = tg.build(p).find((f) => f.name.endsWith('palette.css')).content;
   for (const k of ['bg', 'fg', 'comment', 'purple', 'pink', 'cyan']) {
-    assert.ok(css.includes(`--varjo-${k}:`), `missing --varjo-${k}`);
+    assert.ok(css.includes(`--hues-${k}:`), `missing --hues-${k}`);
   }
 });
 

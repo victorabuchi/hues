@@ -3,33 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Varjo</title>
+<title>Hues</title>
 <link rel="stylesheet" href="styles/palette.css">
 <style>
   :root { color-scheme: dark; }
   body {
     width: 260px; margin: 0; padding: 14px 16px;
     font: 13px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-    background: var(--varjo-bg); color: var(--varjo-fg);
+    background: var(--hues-bg); color: var(--hues-fg);
   }
   h1 { margin: 0 0 2px; font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
-  .sub { margin: 0 0 14px; color: var(--varjo-comment); font-size: 11.5px; }
-  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 0; border-top: 1px solid var(--varjo-bg-lighter); }
-  label { color: var(--varjo-fg); }
+  .sub { margin: 0 0 14px; color: var(--hues-comment); font-size: 11.5px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 0; border-top: 1px solid var(--hues-bg-lighter); }
+  label { color: var(--hues-fg); }
   select, button {
-    font: inherit; color: var(--varjo-fg); background: var(--varjo-bg-light);
-    border: 1px solid var(--varjo-bg-lighter); border-radius: 7px; padding: 4px 8px;
+    font: inherit; color: var(--hues-fg); background: var(--hues-bg-light);
+    border: 1px solid var(--hues-bg-lighter); border-radius: 7px; padding: 4px 8px;
   }
   button { cursor: pointer; width: 100%; margin-top: 12px; padding: 7px; }
-  button:hover { background: var(--varjo-bg-lighter); }
+  button:hover { background: var(--hues-bg-lighter); }
   .sw { display: flex; gap: 4px; margin-top: 12px; }
   .sw i { flex: 1; height: 7px; border-radius: 3px; }
-  input[type=checkbox] { accent-color: var(--varjo-purple); width: 15px; height: 15px; }
-  .host { color: var(--varjo-cyan); font-variant-numeric: tabular-nums; }
+  input[type=checkbox] { accent-color: var(--hues-purple); width: 15px; height: 15px; }
+  .host { color: var(--hues-cyan); font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
-  <h1>Varjo for the Web</h1>
+  <h1>Hues for the Web</h1>
   <p class="sub" id="host">—</p>
 
   <div class="row">
@@ -51,13 +51,13 @@
   <button id="reload">Apply &amp; reload tab</button>
 
   <div class="sw">
-    <i style="background:var(--varjo-cyan)"></i>
-    <i style="background:var(--varjo-green)"></i>
-    <i style="background:var(--varjo-yellow)"></i>
-    <i style="background:var(--varjo-orange)"></i>
-    <i style="background:var(--varjo-pink)"></i>
-    <i style="background:var(--varjo-purple)"></i>
-    <i style="background:var(--varjo-red)"></i>
+    <i style="background:var(--hues-cyan)"></i>
+    <i style="background:var(--hues-green)"></i>
+    <i style="background:var(--hues-yellow)"></i>
+    <i style="background:var(--hues-orange)"></i>
+    <i style="background:var(--hues-pink)"></i>
+    <i style="background:var(--hues-purple)"></i>
+    <i style="background:var(--hues-red)"></i>
   </div>
   <script src="popup.js"></script>
 </body>

@@ -1,11 +1,11 @@
 {
-  "name": "varjo",
+  "name": "hues",
   "version": "0.1.0",
   "description": "One palette, themed across every app on your Mac. Generates and installs native themes from a single colour definition.",
-  "bin": { "varjo": "src/cli.js" },
+  "bin": { "hues": "src/cli.js" },
   "main": "src/palette.js",
   "scripts": {
-    "varjo": "node src/cli.js",
+    "hues": "node src/cli.js",
     "test": "node test/run.js"
   },
   "engines": { "node": ">=18" },

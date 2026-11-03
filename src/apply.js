@@ -37,7 +37,7 @@ function buildAll(palette, targetIds, { onlyDetected = false } = {}) {
 
 /**
  * Install + activate, recording every touched path in a snapshot first so
- * `varjo revert` can put the machine back.
+ * `hues revert` can put the machine back.
  */
 function applyAll(palette, targetIds, { activate = true, onlyDetected = true, wallpaper, wallpaperDir } = {}) {
   const built = buildAll(palette, targetIds, { onlyDetected });

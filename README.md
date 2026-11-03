@@ -154,6 +154,13 @@ reproduces the official Dracula profile's bytes to six decimal places.
 registry since 1.74. Copying a theme folder in there does nothing, no matter how
 often you restart. Hues packages a `.vsix` and installs it through the CLI.
 
+**Safari** extensions cannot be loaded from a folder. The extension has to be
+embedded in a native macOS app, signed, and enabled by hand;
+`scripts/build-safari-app.sh` does all of that bar the final consent. Note that
+Apple's own `safari-web-extension-converter` derives the app's bundle id from
+the app name while using `--bundle-identifier` for the extension, so the two
+disagree and the build fails until one is patched. The script patches it.
+
 **Safari** has no theming API — it cannot be themed, by anyone. The extension
 recolours *web pages*, which is a different thing, and is the reason it also
 works in Brave and Chrome.

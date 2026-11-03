@@ -8,6 +8,7 @@ const registry = require('./registry');
 const applyLib = require('./apply');
 const backup = require('./backup');
 const wall = require('./wallpaper');
+const iconsLib = require('./icons');
 
 const C = {
   dim: (s) => `\x1b[2m${s}\x1b[0m`,
@@ -47,6 +48,8 @@ ${C.bold('varjo')} -- one palette, themed across every app on the machine.
                          [--wallpaper <path|auto|off>]
   varjo wallpaper <dir> [--match p]  rank wallpapers in a directory by palette fit
   varjo set-wallpaper <image>        set the desktop wallpaper
+  varjo icons [--apply] [--only A,B] recolour app icons through the palette
+                      [--clear]      put the original icons back
   varjo snapshots                    list restore points
   varjo revert [id]                  undo an apply (defaults to the newest)
 `;
@@ -107,27 +110,18 @@ function cmdApply(slug, flags) {
   const p = paletteLib.load(slug);
   const only = flags.only ? String(flags.only).split(',') : null;
   console.log(`\n  applying ${C.bold(p.name)}\n`);
-  const { report, snapshot } = applyLib.applyAll(p, only, {
+  const { report, snapshot, wallpaper } = applyLib.applyAll(p, only, {
     activate: flags.activate !== false && !flags['no-activate'],
     onlyDetected: !flags.all,
+    wallpaper: flags.wallpaper,
+    wallpaperDir: flags['wallpaper-dir'],
   });
   reportLines(report);
 
-  const w = flags.wallpaper;
-  if (w && w !== 'off') {
-    try {
-      let img = w;
-      if (w === 'auto' || w === true) {
-        const dir = flags['wallpaper-dir'] || path.join(os.homedir(), 'wallpaper');
-        const ranked = wall.rank(wall.describe(wall.scan(dir)), p);
-        if (!ranked.length) throw new Error(`no landscape desktop images found in ${dir}`);
-        img = ranked[0].file;
-      }
-      const set = wall.set(img);
-      console.log(`  ${C.green('✓')} ${'wallpaper'.padEnd(14)} ${C.dim(set)}`);
-    } catch (err) {
-      console.log(`  ${C.red('✗')} ${'wallpaper'.padEnd(14)} ${C.red(err.message)}`);
-    }
+  if (wallpaper) {
+    console.log(wallpaper.ok
+      ? `  ${C.green('✓')} ${'wallpaper'.padEnd(14)} ${C.dim(wallpaper.file)}`
+      : `  ${C.red('✗')} ${'wallpaper'.padEnd(14)} ${C.red(wallpaper.error)}`);
   }
   console.log(`\n  ${C.dim('restore point: ' + snapshot.id)}`);
   console.log(`  ${C.dim('undo with: varjo revert')}\n`);
@@ -154,6 +148,47 @@ function cmdWallpaper(dir, flags) {
   }
 }
 
+function cmdIcons(flags) {
+  const apps = iconsLib.listApps().map(iconsLib.probe);
+  const only = flags.only ? String(flags.only).split(',').map((s) => s.trim().toLowerCase()) : null;
+  const chosen = only ? apps.filter((a) => only.includes(a.name.toLowerCase())) : apps;
+
+  if (!flags.apply && !flags.clear) {
+    console.log(`\n  ${chosen.length} apps -- ${chosen.filter((a) => a.writable).length} can be themed\n`);
+    for (const a of chosen) {
+      console.log(`  ${a.writable ? C.green('✓') : C.dim('·')} ${a.name.padEnd(30)}${a.writable ? '' : C.dim(a.reason)}`);
+    }
+    console.log(`\n  ${C.dim('run with --apply to recolour, --clear to restore originals')}\n`);
+    return;
+  }
+
+  const targets = chosen.filter((a) => a.writable);
+  if (!targets.length) { console.log('  no writable app bundles among the selection'); return; }
+
+  if (flags.clear) {
+    console.log(`\n  restoring ${targets.length} icons\n`);
+    for (const a of targets) {
+      const r = iconsLib.clear(a);
+      console.log(`  ${r.ok ? C.green('↩') : C.red('✗')} ${a.name}${r.ok ? '' : '  ' + C.red(r.error)}`);
+    }
+    iconsLib.refreshDock();
+    console.log();
+    return;
+  }
+
+  const p = paletteLib.load(flags.palette || 'dracula');
+  const outDir = path.join(applyLib.BUILD_DIR, p.slug, 'icons');
+  console.log(`\n  recolouring ${targets.length} icons with ${C.bold(p.name)}\n`);
+  let ok = 0;
+  for (const a of targets) {
+    const r = iconsLib.recolor(a, p, outDir);
+    if (r.ok) ok++;
+    console.log(`  ${r.ok ? C.green('✓') : C.red('✗')} ${a.name.padEnd(30)}${r.ok ? C.dim(path.basename(r.png)) : C.red(r.error)}`);
+  }
+  iconsLib.refreshDock();
+  console.log(`\n  ${ok}/${targets.length} recoloured. ${C.dim('undo with: varjo icons --clear')}\n`);
+}
+
 function cmdSnapshots() {
   const snaps = backup.listSnapshots();
   if (!snaps.length) return console.log('  no snapshots yet');
@@ -167,7 +202,8 @@ function cmdRevert(id) {
   console.log(`\n  reverted ${C.bold(r.snapshot.id)}`);
   for (const p of r.restored) console.log(`  ${C.green('↩')} restored ${C.dim(p)}`);
   for (const p of r.removed) console.log(`  ${C.yellow('✗')} removed  ${C.dim(p)}`);
-  console.log(`\n  ${C.dim('app-level settings (Xcode theme picker, loaded browser themes) are not reverted')}\n`);
+  console.log(`\n  ${C.dim('not reverted: the Xcode theme picker, browser themes you loaded by hand.')}`);
+  console.log(`  ${C.dim('a reverted wallpaper may need: killall WallpaperAgent')}\n`);
 }
 
 function main() {
@@ -186,6 +222,7 @@ function main() {
         console.log(`  set wallpaper: ${wall.set(pos[1])}`);
         return;
       }
+      case 'icons': return cmdIcons(flags);
       case 'snapshots': return cmdSnapshots();
       case 'revert': return cmdRevert(pos[1]);
       case undefined: case 'help': case '--help': case '-h': return console.log(HELP);

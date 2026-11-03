@@ -73,6 +73,7 @@ platform-specific. No npm dependencies.
 | `varjo check <palette>` | WCAG 2.1 contrast audit |
 | `varjo build <palette>` | Generate theme files into `build/` |
 | `varjo apply <palette>` | Generate, install, and switch apps over |
+| `varjo icons [--apply\|--clear]` | Recolour app icons through the palette |
 | `varjo wallpaper <dir> --match <palette>` | Rank wallpapers by palette fit |
 | `varjo set-wallpaper <image>` | Set the desktop wallpaper |
 | `varjo snapshots` / `varjo revert` | List and undo restore points |
@@ -95,6 +96,7 @@ were not detected, `--no-activate` to install without switching, and
 | `safari` | staged web extension | no — needs Xcode conversion |
 | `iterm` | staged `.itermcolors` | no — manual import |
 | `alacritty` | `~/.config/alacritty/themes` | no — needs one `import` line |
+| `macos` | `defaults` (appearance, accent, highlight) | yes |
 
 "Switches itself: no" means the app provides no supported way to do it from the
 command line. Varjo prints the one manual step instead of pretending.
@@ -124,6 +126,21 @@ Then `varjo check midnight` to audit the contrast, and `varjo apply midnight`.
 
 An optional `ansi` block pins the 16 terminal colours exactly; without it they
 are derived from the palette, which is what lets any palette work in a terminal.
+
+## What cannot be themed on macOS
+
+Linux Dracula screenshots show a themed desktop *shell* — panels, menus, the
+dock, the window manager. GNOME exposes that; macOS does not. There is no API
+to theme the Dock, menu bar, Finder, or system windows, and no supported way to
+add one. The `macos` target sets the three things Apple does expose: appearance,
+one of eight fixed accent swatches, and the highlight colour.
+
+Worth noting about those screenshots: the **app icons in them are stock**. Dracula
+does not ship recoloured app icons, so nothing in a normal Dracula install
+changes them. Varjo's `icons` command goes beyond that — it rasterises each
+app's real icon and maps every pixel to its nearest palette colour — but it only
+works on bundles you can write to, which rules out Apple's apps and anything
+owned by root.
 
 ## Notes on a few hard parts
 

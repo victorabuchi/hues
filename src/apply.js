@@ -4,6 +4,7 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 const registry = require('./registry');
 const backup = require('./backup');
+const wall = require('./wallpaper');
 
 const BUILD_DIR = path.join(__dirname, '..', 'build');
 
@@ -38,7 +39,7 @@ function buildAll(palette, targetIds, { onlyDetected = false } = {}) {
  * Install + activate, recording every touched path in a snapshot first so
  * `varjo revert` can put the machine back.
  */
-function applyAll(palette, targetIds, { activate = true, onlyDetected = true } = {}) {
+function applyAll(palette, targetIds, { activate = true, onlyDetected = true, wallpaper, wallpaperDir } = {}) {
   const built = buildAll(palette, targetIds, { onlyDetected });
   const snap = backup.newSnapshot(palette.slug);
   const report = [];
@@ -76,8 +77,27 @@ function applyAll(palette, targetIds, { activate = true, onlyDetected = true } =
     }
   }
 
+  // The wallpaper runs inside the snapshot too, otherwise `revert` would
+  // silently leave the desktop changed.
+  let wallpaperResult = null;
+  if (wallpaper && wallpaper !== 'off') {
+    try {
+      let img = wallpaper;
+      if (wallpaper === 'auto' || wallpaper === true) {
+        const dir = wallpaperDir || path.join(require('os').homedir(), 'wallpaper');
+        const ranked = wall.rank(wall.describe(wall.scan(dir)), palette);
+        if (!ranked.length) throw new Error(`no landscape desktop images found in ${dir}`);
+        img = ranked[0].file;
+      }
+      if (fs.existsSync(wall.INDEX)) backup.capture(snap, wall.INDEX);
+      wallpaperResult = { ok: true, file: wall.set(img) };
+    } catch (err) {
+      wallpaperResult = { ok: false, error: err.message };
+    }
+  }
+
   const manifest = backup.writeSnapshot(snap, { palette: palette.slug });
-  return { report, snapshot: manifest };
+  return { report, snapshot: manifest, wallpaper: wallpaperResult };
 }
 
 module.exports = { buildAll, applyAll, BUILD_DIR };

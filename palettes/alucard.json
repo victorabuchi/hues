@@ -1,0 +1,23 @@
+{
+  "name": "Alucard",
+  "slug": "alucard",
+  "appearance": "light",
+  "colors": {
+    "bg":         "#fffbeb",
+    "bgDark":     "#f5f1e1",
+    "bgDarker":   "#e8e4d4",
+    "bgLight":    "#fffdf5",
+    "bgLighter":  "#ffffff",
+    "fg":         "#1f1f1f",
+    "currentLine":"#cfcfde",
+    "selection":  "#cfcfde",
+    "comment":    "#6c664b",
+    "cyan":       "#036a96",
+    "green":      "#14710a",
+    "orange":     "#a34d14",
+    "pink":       "#a3144d",
+    "purple":     "#644ac9",
+    "red":        "#cb3a2a",
+    "yellow":     "#846e15"
+  }
+}

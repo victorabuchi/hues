@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Varjo for the Web",
+  "version": "0.1.0",
+  "description": "Recolours the sites you use every day with your Varjo palette.",
+  "icons": { "128": "icons/icon-128.png" },
+  "permissions": ["storage", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "action": { "default_popup": "popup.html", "default_title": "Varjo" },
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["styles/palette.css", "styles/base.css", "styles/sites.css"],
+      "js": ["content.js"],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    { "resources": ["styles/*.css"], "matches": ["<all_urls>"] }
+  ]
+}

@@ -1,0 +1,116 @@
+/* Per-site rules, hand-checked. Active in both scopes, because these are
+   targeted rather than guessed. Each block keys off the host via :is() on
+   attributes the site itself sets, or plain element selectors under a
+   host-scoped wrapper that the browser resolves per-document. */
+
+/* ---------- GitHub ---------- */
+html[data-varjo] body[class*="logged-in"],
+html[data-varjo] .application-main {
+  --color-canvas-default: var(--varjo-bg);
+  --color-canvas-subtle: var(--varjo-bg-dark);
+  --color-canvas-inset: var(--varjo-bg-darker);
+  --color-fg-default: var(--varjo-fg);
+  --color-fg-muted: var(--varjo-comment);
+  --color-border-default: var(--varjo-bg-lighter);
+  --color-accent-fg: var(--varjo-cyan);
+  --color-success-fg: var(--varjo-green);
+  --color-danger-fg: var(--varjo-red);
+  --color-attention-fg: var(--varjo-orange);
+  --color-done-fg: var(--varjo-purple);
+}
+html[data-varjo] :is(.Header, .UnderlineNav, .footer) {
+  background-color: var(--varjo-bg-darker) !important;
+  border-color: var(--varjo-bg-lighter) !important;
+}
+html[data-varjo] :is(.Box, .Popover-message, .markdown-body .highlight pre, .blob-code-inner) {
+  background-color: var(--varjo-bg-dark) !important;
+  color: var(--varjo-fg) !important;
+}
+html[data-varjo] .pl-k  { color: var(--varjo-pink) !important; }
+html[data-varjo] .pl-s  { color: var(--varjo-yellow) !important; }
+html[data-varjo] .pl-c  { color: var(--varjo-comment) !important; font-style: italic; }
+html[data-varjo] .pl-en { color: var(--varjo-green) !important; }
+html[data-varjo] .pl-c1, html[data-varjo] .pl-s1 .pl-v { color: var(--varjo-purple) !important; }
+html[data-varjo] .pl-smi, html[data-varjo] .pl-ent { color: var(--varjo-cyan) !important; }
+
+/* ---------- Hacker News ---------- */
+html[data-varjo] body > center > table,
+html[data-varjo] #hnmain {
+  background-color: var(--varjo-bg) !important;
+}
+html[data-varjo] td[bgcolor="#ff6600"],
+html[data-varjo] .hnname {
+  background-color: var(--varjo-bg-darker) !important;
+}
+html[data-varjo] .titleline > a { color: var(--varjo-cyan) !important; }
+html[data-varjo] :is(.subtext, .hnuser, .age, .score) { color: var(--varjo-comment) !important; }
+html[data-varjo] .commtext { color: var(--varjo-fg) !important; }
+
+/* ---------- Wikipedia / MediaWiki ---------- */
+html[data-varjo] :is(.mw-page-container, .mw-body, #content, #mw-head, .vector-header-container) {
+  background-color: var(--varjo-bg) !important;
+  color: var(--varjo-fg) !important;
+  border-color: var(--varjo-bg-lighter) !important;
+}
+html[data-varjo] :is(.infobox, .navbox, .wikitable, .thumbinner, #toc, .toc) {
+  background-color: var(--varjo-bg-dark) !important;
+  color: var(--varjo-fg) !important;
+  border-color: var(--varjo-bg-lighter) !important;
+}
+html[data-varjo] .wikitable > * > tr > :is(th, td) { border-color: var(--varjo-bg-lighter) !important; }
+html[data-varjo] .wikitable > * > tr > th { background-color: var(--varjo-bg-darker) !important; }
+html[data-varjo] a.new { color: var(--varjo-red) !important; }
+
+/* ---------- Stack Overflow / Stack Exchange ---------- */
+html[data-varjo] :is(.s-topbar, #left-sidebar, .s-sidebarwidget, #content, .post-layout) {
+  background-color: var(--varjo-bg) !important;
+  color: var(--varjo-fg) !important;
+  border-color: var(--varjo-bg-lighter) !important;
+}
+html[data-varjo] .s-topbar { background-color: var(--varjo-bg-darker) !important; }
+html[data-varjo] :is(.s-prose pre, .s-code-block, code) {
+  background-color: var(--varjo-bg-dark) !important;
+  color: var(--varjo-green) !important;
+}
+html[data-varjo] .s-post-summary { border-color: var(--varjo-bg-lighter) !important; }
+html[data-varjo] .s-tag { background-color: var(--varjo-bg-light) !important; color: var(--varjo-cyan) !important; }
+
+/* ---------- Google Search ---------- */
+html[data-varjo] #searchform, html[data-varjo] #appbar, html[data-varjo] #main {
+  background-color: var(--varjo-bg) !important;
+}
+html[data-varjo] #search :is(h3, h3 > span) { color: var(--varjo-cyan) !important; }
+html[data-varjo] #search cite { color: var(--varjo-green) !important; }
+html[data-varjo] #rhs, html[data-varjo] .kp-wholepage {
+  background-color: var(--varjo-bg-dark) !important;
+  border-color: var(--varjo-bg-lighter) !important;
+}
+
+/* ---------- YouTube ---------- */
+html[data-varjo] ytd-app, html[data-varjo] ytd-watch-flexy {
+  --yt-spec-base-background: var(--varjo-bg);
+  --yt-spec-raised-background: var(--varjo-bg-dark);
+  --yt-spec-menu-background: var(--varjo-bg-dark);
+  --yt-spec-text-primary: var(--varjo-fg);
+  --yt-spec-text-secondary: var(--varjo-comment);
+  --yt-spec-call-to-action: var(--varjo-cyan);
+  --yt-spec-brand-button-background: var(--varjo-purple);
+}
+html[data-varjo] #masthead-container { background-color: var(--varjo-bg-darker) !important; }
+
+/* ---------- Reddit ---------- */
+html[data-varjo] :is(shreddit-app, .theme-beta, #main-content) {
+  background-color: var(--varjo-bg) !important;
+  color: var(--varjo-fg) !important;
+}
+html[data-varjo] shreddit-post { background-color: var(--varjo-bg-dark) !important; }
+
+/* ---------- MDN ---------- */
+html[data-varjo] :is(.main-page-content, .document-toc-container, .sidebar) {
+  background-color: var(--varjo-bg) !important;
+  color: var(--varjo-fg) !important;
+}
+html[data-varjo] .main-page-content :is(pre, code) {
+  background-color: var(--varjo-bg-dark) !important;
+  color: var(--varjo-green) !important;
+}

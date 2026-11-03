@@ -1,0 +1,43 @@
+/* Generic recolour. Only active in "every site" mode, because a blanket
+   override is guesswork on layouts nobody has checked. Scoped to the marker
+   attribute content.js sets, so toggling off is instant and complete. */
+
+html[data-varjo="all"],
+html[data-varjo="all"] body {
+  background-color: var(--varjo-bg) !important;
+  color: var(--varjo-fg) !important;
+}
+
+html[data-varjo="all"] :is(header, footer, nav, aside, main, section, article, div, form,
+  table, thead, tbody, tr, td, th, ul, ol, li, dl, dd, dt, fieldset, details, summary,
+  figure, blockquote, pre, p, h1, h2, h3, h4, h5, h6, span, label, legend) {
+  background-color: transparent !important;
+  border-color: var(--varjo-bg-lighter) !important;
+}
+
+html[data-varjo="all"] :is(p, span, li, td, th, dd, dt, label, h1, h2, h3, h4, h5, h6, strong, em, small, figcaption) {
+  color: var(--varjo-fg) !important;
+}
+
+html[data-varjo="all"] a { color: var(--varjo-cyan) !important; }
+html[data-varjo="all"] a:visited { color: var(--varjo-purple) !important; }
+
+html[data-varjo="all"] :is(input, textarea, select, button) {
+  background-color: var(--varjo-bg-light) !important;
+  color: var(--varjo-fg) !important;
+  border-color: var(--varjo-bg-lighter) !important;
+}
+html[data-varjo="all"] ::placeholder { color: var(--varjo-comment) !important; }
+
+html[data-varjo="all"] :is(pre, code, kbd, samp) {
+  background-color: var(--varjo-bg-dark) !important;
+  color: var(--varjo-green) !important;
+}
+
+html[data-varjo="all"] :is(hr, table, td, th) { border-color: var(--varjo-bg-lighter) !important; }
+html[data-varjo="all"] ::selection { background: var(--varjo-selection) !important; color: var(--varjo-fg) !important; }
+
+/* Leave media alone -- recolouring images is never what you want. */
+html[data-varjo="all"] :is(img, video, canvas, svg, iframe, picture) {
+  background-color: transparent !important;
+}

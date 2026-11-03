@@ -124,6 +124,17 @@ html[data-hues] :is([class*="messageBody"], [class*="MessageBody"], [id*="Readin
   color: var(--hues-fg) !important;
   -webkit-text-fill-color: var(--hues-fg) !important;
 }
+/* The subject header and command surfaces keep a white background-image even
+   once background-color is transparent, leaving near-white text on white. */
+html[data-hues] :is([class*="subject"], [class*="Subject"],
+  [class*="headerContainer"], [class*="HeaderContainer"],
+  [class*="commandBar"], [class*="CommandBar"], [role="heading"]) {
+  background-color: var(--hues-bg) !important;
+  background-image: none !important;
+  color: var(--hues-fg) !important;
+  -webkit-text-fill-color: var(--hues-fg) !important;
+}
+
 /* Mail items carry their own light surfaces; flatten them onto the palette. */
 html[data-hues] :is([role="listbox"], [role="option"], [class*="customScrollBar"]) {
   background-color: var(--hues-bg-dark) !important;

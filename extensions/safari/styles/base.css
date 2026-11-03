@@ -53,6 +53,39 @@ html[data-hues="all"] :is(pre, code, kbd, samp) * {
   -webkit-text-fill-color: var(--hues-green) !important;
 }
 
+/* `background-color: transparent` does not clear a background *image*, and a
+   white background-image under text we have just forced to near-white is worse
+   than leaving the element alone. Clear it on containers only: inline elements
+   like <i> and <span> routinely use background-image for icon sprites, and
+   blanking those would delete the icons. */
+html[data-hues="all"] :is(html, body, div, section, main, header, footer, aside,
+  article, nav, form, fieldset, table, thead, tbody, tfoot, tr, td, th,
+  ul, ol, li, dl, dd, dt, figure, details, summary) {
+  background-image: none !important;
+}
+
+/* Scrollbars are painted by the engine, not by any element, so the rules above
+   never reach them -- they stayed light against the recoloured page. */
+html[data-hues="all"] ::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+  background: var(--hues-bg-dark) !important;
+}
+html[data-hues="all"] ::-webkit-scrollbar-track,
+html[data-hues="all"] ::-webkit-scrollbar-corner {
+  background: var(--hues-bg-dark) !important;
+}
+html[data-hues="all"] ::-webkit-scrollbar-thumb {
+  background: var(--hues-selection) !important;
+  border-radius: 6px;
+}
+html[data-hues="all"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--hues-comment) !important;
+}
+html[data-hues="all"] {
+  scrollbar-color: var(--hues-selection) var(--hues-bg-dark);
+}
+
 html[data-hues="all"] ::selection {
   background: var(--hues-selection) !important;
   color: var(--hues-fg) !important;

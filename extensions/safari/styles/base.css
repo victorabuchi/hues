@@ -8,36 +8,58 @@ html[data-hues="all"] body {
   color: var(--hues-fg) !important;
 }
 
-html[data-hues="all"] :is(header, footer, nav, aside, main, section, article, div, form,
-  table, thead, tbody, tr, td, th, ul, ol, li, dl, dd, dt, fieldset, details, summary,
-  figure, blockquote, pre, p, h1, h2, h3, h4, h5, h6, span, label, legend) {
+/* Force the text colour on everything that can hold text.
+   An element whitelist (p, span, li, h1...) always misses something: sites put
+   body copy in bare <div>s, in custom elements, or behind inline styles. When
+   the background is forced dark but the text is not, those elements keep their
+   original dark-on-light colour and become invisible. Outlook's message body
+   is exactly this case.
+   :where() keeps the exclusions at zero specificity, so the targeted rules
+   below (links, code, form controls) still win without needing extra weight. */
+html[data-hues="all"] *:not(:where(svg, svg *, img, video, canvas, iframe, picture, source, object, embed)) {
   background-color: transparent !important;
   border-color: var(--hues-bg-lighter) !important;
-}
-
-html[data-hues="all"] :is(p, span, li, td, th, dd, dt, label, h1, h2, h3, h4, h5, h6, strong, em, small, figcaption) {
   color: var(--hues-fg) !important;
+  /* Some sites paint text with -webkit-text-fill-color, which beats `color`. */
+  -webkit-text-fill-color: var(--hues-fg) !important;
 }
 
-html[data-hues="all"] a { color: var(--hues-cyan) !important; }
-html[data-hues="all"] a:visited { color: var(--hues-purple) !important; }
+html[data-hues="all"] a,
+html[data-hues="all"] a * {
+  color: var(--hues-cyan) !important;
+  -webkit-text-fill-color: var(--hues-cyan) !important;
+}
+html[data-hues="all"] a:visited,
+html[data-hues="all"] a:visited * {
+  color: var(--hues-purple) !important;
+  -webkit-text-fill-color: var(--hues-purple) !important;
+}
 
 html[data-hues="all"] :is(input, textarea, select, button) {
   background-color: var(--hues-bg-light) !important;
   color: var(--hues-fg) !important;
+  -webkit-text-fill-color: var(--hues-fg) !important;
   border-color: var(--hues-bg-lighter) !important;
 }
-html[data-hues="all"] ::placeholder { color: var(--hues-comment) !important; }
-
-html[data-hues="all"] :is(pre, code, kbd, samp) {
-  background-color: var(--hues-bg-dark) !important;
-  color: var(--hues-green) !important;
+html[data-hues="all"] ::placeholder {
+  color: var(--hues-comment) !important;
+  -webkit-text-fill-color: var(--hues-comment) !important;
 }
 
-html[data-hues="all"] :is(hr, table, td, th) { border-color: var(--hues-bg-lighter) !important; }
-html[data-hues="all"] ::selection { background: var(--hues-selection) !important; color: var(--hues-fg) !important; }
+html[data-hues="all"] :is(pre, code, kbd, samp),
+html[data-hues="all"] :is(pre, code, kbd, samp) * {
+  background-color: var(--hues-bg-dark) !important;
+  color: var(--hues-green) !important;
+  -webkit-text-fill-color: var(--hues-green) !important;
+}
 
-/* Leave media alone -- recolouring images is never what you want. */
+html[data-hues="all"] ::selection {
+  background: var(--hues-selection) !important;
+  color: var(--hues-fg) !important;
+}
+
+/* Leave media alone -- recolouring images is never what you want. Also restore
+   a normal backdrop for anything transparent that sits on an image. */
 html[data-hues="all"] :is(img, video, canvas, svg, iframe, picture) {
   background-color: transparent !important;
 }

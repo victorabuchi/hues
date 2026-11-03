@@ -114,3 +114,20 @@ html[data-hues] .main-page-content :is(pre, code) {
   background-color: var(--hues-bg-dark) !important;
   color: var(--hues-green) !important;
 }
+
+/* ---------- Outlook on the web / Microsoft 365 ---------- */
+html[data-hues] :is([class*="readingPane"], [class*="ReadingPane"], [role="main"]) {
+  background-color: var(--hues-bg) !important;
+}
+html[data-hues] :is([class*="messageBody"], [class*="MessageBody"], [id*="ReadingPaneContainer"]) {
+  background-color: var(--hues-bg) !important;
+  color: var(--hues-fg) !important;
+  -webkit-text-fill-color: var(--hues-fg) !important;
+}
+/* Mail items carry their own light surfaces; flatten them onto the palette. */
+html[data-hues] :is([role="listbox"], [role="option"], [class*="customScrollBar"]) {
+  background-color: var(--hues-bg-dark) !important;
+}
+html[data-hues] [role="option"][aria-selected="true"] {
+  background-color: var(--hues-current-line) !important;
+}

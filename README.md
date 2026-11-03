@@ -55,14 +55,40 @@ generated output. Change one hex value, re-run one command, and every app follow
 ## Install
 
 ```sh
-git clone https://github.com/victorabuchi/hues.git
-cd hues
-npm link          # puts `hues` on your PATH
-hues targets
+curl -fsSL https://raw.githubusercontent.com/victorabuchi/hues/main/install.sh | bash
+```
+
+Or from a clone:
+
+```sh
+git clone https://github.com/victorabuchi/hues.git && cd hues && npm link
 ```
 
 Node 18+. macOS only — the installers and the colour conversion are
 platform-specific. No npm dependencies.
+
+## Undoing everything
+
+```sh
+hues reset              # put the machine back exactly as it was
+hues reset --dry-run    # show what that would do, change nothing
+```
+
+Before its first change, Hues records a **baseline**: your appearance, accent
+and highlight colours, your Terminal profile, your editor themes and your
+wallpaper. That file is written once and never overwritten, so `reset` always
+knows what "normal" meant on your machine — not merely what the last run did.
+
+`reset` restores app icons, macOS appearance, the Terminal profile, VS Code,
+Zed, vim, git and the wallpaper. It does not touch browser themes or extensions
+you loaded by hand, because the browser owns those; remove them from each
+browser's extensions page. `--remove-app` also deletes the Safari extension app.
+
+To remove Hues itself as well:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/victorabuchi/hues/main/uninstall.sh | bash
+```
 
 ## Commands
 
@@ -76,7 +102,8 @@ platform-specific. No npm dependencies.
 | `hues icons [--apply\|--clear]` | Recolour app icons through the palette |
 | `hues wallpaper <dir> --match <palette>` | Rank wallpapers by palette fit |
 | `hues set-wallpaper <image>` | Set the desktop wallpaper |
-| `hues snapshots` / `hues revert` | List and undo restore points |
+| `hues snapshots` / `hues revert` | List and undo the last apply |
+| `hues reset [--dry-run]` | Put **everything** back: icons, appearance, wallpaper, editors |
 
 Useful flags: `--only vscode,vim` to limit targets, `--all` to include apps that
 were not detected, `--no-activate` to install without switching, and

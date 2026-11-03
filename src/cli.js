@@ -9,6 +9,8 @@ const applyLib = require('./apply');
 const backup = require('./backup');
 const wall = require('./wallpaper');
 const iconsLib = require('./icons');
+const baselineLib = require('./baseline');
+const resetLib = require('./reset');
 
 const C = {
   dim: (s) => `\x1b[2m${s}\x1b[0m`,
@@ -50,6 +52,8 @@ ${C.bold('hues')} -- one palette, themed across every app on the machine.
   hues set-wallpaper <image>        set the desktop wallpaper
   hues icons [--apply] [--only A,B] recolour app icons through the palette
                       [--clear]      put the original icons back
+  hues reset [--dry-run]            put EVERYTHING back: icons, appearance,
+                     [--remove-app]  terminal, editors, wallpaper
   hues snapshots                    list restore points
   hues revert [id]                  undo an apply (defaults to the newest)
 `;
@@ -109,7 +113,12 @@ function cmdBuild(slug, flags) {
 function cmdApply(slug, flags) {
   const p = paletteLib.load(slug);
   const only = flags.only ? String(flags.only).split(',') : null;
+  // Recorded once, before anything changes, so `hues reset` always has a
+  // truthful picture of what "normal" looked like on this machine.
+  const fresh = !baselineLib.load();
+  baselineLib.capture();
   console.log(`\n  applying ${C.bold(p.name)}\n`);
+  if (fresh) console.log(`  ${C.dim('baseline recorded -> ' + baselineLib.FILE)}\n`);
   const { report, snapshot, wallpaper } = applyLib.applyAll(p, only, {
     activate: flags.activate !== false && !flags['no-activate'],
     onlyDetected: !flags.all,
@@ -189,6 +198,27 @@ function cmdIcons(flags) {
   console.log(`\n  ${ok}/${targets.length} recoloured. ${C.dim('undo with: hues icons --clear')}\n`);
 }
 
+function cmdReset(flags) {
+  const dryRun = !!flags['dry-run'];
+  const { steps, baseline } = resetLib.reset({
+    dryRun,
+    removeSafariApp: !!flags['remove-app'],
+  });
+  console.log(dryRun
+    ? `\n  ${C.bold('dry run')} -- nothing was changed\n`
+    : `\n  ${C.bold('restoring the machine to its pre-Hues state')}\n`);
+  for (const s of steps) {
+    if (s.planned) { console.log(`  ${C.dim('would')} ${s.name.padEnd(18)} ${C.dim(s.detail)}`); continue; }
+    console.log(`  ${s.ok ? C.green('✓') : C.red('✗')} ${s.name.padEnd(18)} ${s.ok ? C.dim(s.detail) : C.red(s.error)}`);
+  }
+  if (baseline.terminal && baseline.terminal.uncertain) {
+    console.log(`\n  ${C.yellow('note')} the original Terminal profile was not recorded before Hues ran;`);
+    console.log(`       "${baseline.terminal.default}" is the macOS default and was assumed.`);
+  }
+  console.log(`\n  ${C.dim('not undone: browser themes/extensions you loaded by hand -- remove those')}`);
+  console.log(`  ${C.dim('in each browser\'s extensions page.')}\n`);
+}
+
 function cmdSnapshots() {
   const snaps = backup.listSnapshots();
   if (!snaps.length) return console.log('  no snapshots yet');
@@ -223,6 +253,7 @@ function main() {
         return;
       }
       case 'icons': return cmdIcons(flags);
+      case 'reset': return cmdReset(flags);
       case 'snapshots': return cmdSnapshots();
       case 'revert': return cmdRevert(pos[1]);
       case undefined: case 'help': case '--help': case '-h': return console.log(HELP);

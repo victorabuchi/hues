@@ -133,6 +133,7 @@ were not detected, `--no-activate` to install without switching, and
 | `vscode` | packaged `.vsix` via the VS Code CLI | yes |
 | `terminal-app` | imported profile | yes, default + startup |
 | `xcode` | `~/Library/Developer/Xcode/UserData/FontAndColorThemes` | no — Xcode has no CLI for it |
+| `jetbrains` | JetBrains configuration `colors` directories | no — IntelliJ must pick the imported scheme |
 | `vim` | `~/.vim/colors` | yes, via a marked block in `.vimrc` |
 | `git` | marked block in `~/.gitconfig` | yes |
 | `zed` | `~/.config/zed/themes` | yes |
@@ -208,6 +209,11 @@ disagree and the build fails until one is patched. The script patches it.
 **Safari** has no theming API — it cannot be themed, by anyone. The extension
 recolours *web pages*, which is a different thing, and is the reason it also
 works in Brave and Chrome.
+
+Claude is included in the tuned web rules, including its sidebar, composer,
+inputs, buttons and send controls. GitHub Copilot in a browser follows the
+same web-extension rules; GitHub Copilot inside VS Code follows the generated
+VS Code theme. Chrome Canary uses the same Chromium theme format as Chrome.
 
 **Wallpapers** moved to `com.apple.wallpaper/Store/Index.plist` in recent macOS.
 Reading the current wallpaper via AppleScript returns `missing value` there, but

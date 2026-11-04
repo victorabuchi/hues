@@ -30,6 +30,7 @@ html[data-hues]:is(
   [data-hues-site$="serverfault.com"],
   [data-hues-site$="developer.mozilla.org"],
   [data-hues-site$="reddit.com"],
+  [data-hues-site$="claude.ai"],
   [data-hues-site*="moodle"],
   [data-hues-site*="outlook."],
   [data-hues-site*="office.com"]
@@ -48,6 +49,7 @@ html[data-hues]:is(
   [data-hues-site$="serverfault.com"],
   [data-hues-site$="developer.mozilla.org"],
   [data-hues-site$="reddit.com"],
+  [data-hues-site$="claude.ai"],
   [data-hues-site*="moodle"],
   [data-hues-site*="outlook."],
   [data-hues-site*="office.com"]
@@ -141,6 +143,39 @@ html[data-hues][data-hues-site$="developer.mozilla.org"] .main-page-content :is(
 
 /* ---------- Reddit ---------- */
 html[data-hues][data-hues-site$="reddit.com"] shreddit-post { background-color: var(--hues-bg-dark) !important; }
+
+/* ---------- Claude ---------- */
+html[data-hues][data-hues-site$="claude.ai"] :is(
+  nav, aside, header, main, [role="dialog"], [role="complementary"],
+  [data-testid*="sidebar"], [data-testid*="conversation"]
+) {
+  background-color: var(--hues-bg-dark) !important;
+}
+html[data-hues][data-hues-site$="claude.ai"] :is(
+  [contenteditable="true"], textarea, [role="textbox"],
+  [data-testid*="composer"], [data-testid*="chat-input"]
+) {
+  background-color: var(--hues-bg-light) !important;
+  color: var(--hues-fg) !important;
+  -webkit-text-fill-color: var(--hues-fg) !important;
+  border-color: var(--hues-bg-lighter) !important;
+  caret-color: var(--hues-fg) !important;
+}
+html[data-hues][data-hues-site$="claude.ai"] :is(
+  button, [role="button"], [aria-pressed="true"], [aria-selected="true"]
+) {
+  background-color: var(--hues-bg-light) !important;
+  color: var(--hues-fg) !important;
+  -webkit-text-fill-color: var(--hues-fg) !important;
+  border-color: var(--hues-bg-lighter) !important;
+}
+html[data-hues][data-hues-site$="claude.ai"] :is(
+  [data-testid*="send"], [data-testid*="submit"], [aria-label*="Send"]
+) {
+  background-color: var(--hues-purple) !important;
+  color: var(--hues-bg-darker) !important;
+  -webkit-text-fill-color: var(--hues-bg-darker) !important;
+}
 
 /* ---------- Moodle ---------- */
 html[data-hues][data-hues-site*="moodle"] :is(.navbar, #page-header) { background-color: var(--hues-bg-darker) !important; }

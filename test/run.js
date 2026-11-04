@@ -173,6 +173,20 @@ t('safari palette.css exposes every custom property', () => {
     assert.ok(css.includes(`--hues-${k}:`), `missing --hues-${k}`);
   }
 });
+t('safari tuned-site CSS includes Claude and readable composer controls', () => {
+  const tg = registry.all().find((x) => x.id === 'safari');
+  const css = tg.build(paletteLib.load('dracula')).find((f) => f.name.endsWith('styles/sites.css')).content;
+  assert.ok(css.includes('[data-hues-site$="claude.ai"]'));
+  assert.ok(css.includes('[contenteditable="true"]'));
+  assert.ok(css.includes('[data-testid*="send"]'));
+});
+t('JetBrains theme carries Dracula editor and console colours', () => {
+  const tg = registry.all().find((x) => x.id === 'jetbrains');
+  const theme = tg.build(paletteLib.load('dracula'))[0].content;
+  assert.ok(theme.includes('name="CARET_COLOR" value="F8F8F2"'));
+  assert.ok(theme.includes('name="CONSOLE_BACKGROUND_KEY" value="21222C"'));
+  assert.ok(theme.includes('name="DEFAULT_KEYWORD"'));
+});
 
 console.log(`\n  ${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);
